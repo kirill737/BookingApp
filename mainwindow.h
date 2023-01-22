@@ -57,11 +57,11 @@ private slots:
     void applyFilters();
     /// @brief Отчистка фильтров базы данных
     void clearFilters();
-    /// @brief Вывод базы данных с установленными фильтрами после нажатия кнопки "Найти"
+    /// @brief Вывод базы данных с установленными фильтрами после нажатия кнопки
     void on_btnSetFilters_clicked();
     /// @brief Обработка изменения значений слайдера
     void on_sdrCapacity_valueChanged();
-    /// @brief Добавленияаудитории в дефолтными параметрами в базу данных
+    /// @brief Добавления аудитории c установленными параметрами
     void on_btnAddAudit_clicked();
     /// @brief Удаление выбранном аудитории из базы данных
     void on_btnRemoveAudit_clicked();

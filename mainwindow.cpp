@@ -2,10 +2,7 @@
 #include "./ui_mainwindow.h"
 
 void MainWindow::clear_db() {
-    query->exec("DROP TABLE IF EXISTS booking");
-    query->exec("DROP TABLE IF EXISTS audiences");
     query->exec("DROP TABLE IF EXISTS audiences_info");
-    query->exec("DROP TABLE IF EXISTS users");
 }
 void MainWindow::create_db() {
     query->exec("CREATE TABLE audiences_info ("
@@ -54,11 +51,8 @@ MainWindow::MainWindow(QWidget *parent)
     db.open();
     query = new QSqlQuery(db);
     qmodel = new QSqlQueryModel();
-    clear_db();
-    create_db();
-    fill_db();
     clearFilters();
-    currentId = 1;
+    currentId = -1;
     applyFilters();
 }
 

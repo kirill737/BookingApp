@@ -56,6 +56,7 @@ set_target_properties(booking_app PROPERTIES
     WIN32_EXECUTABLE TRUE
 )
 
+
 if(QT_VERSION_MAJOR EQUAL 6)
     qt_finalize_executable(booking_app)
 endif()

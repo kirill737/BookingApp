@@ -280,26 +280,36 @@ void MainWindow::on_pushButtonSaveInfo_clicked() {
     valCap = ui->lineEdit_valCap->text();
     valEquip = ui->lineEdit_valEquip->text();
     valStatus = ui->comboBox_valStatus->currentText();
-    QString updateRequest = "UPDATE audiences_info SET (full_num, capacity, type, equipment, status, building, number) = ('";
-    updateRequest += valAud;
-    updateRequest += "', '";
-    updateRequest += valCap;
-    updateRequest += "', ' ";
-    updateRequest += valType;
-    updateRequest += "', '";
-    updateRequest += valEquip;
-    updateRequest += "', '";
-    updateRequest += valStatus;
-    updateRequest += "', '";
-    updateRequest += valAudBuilding;
-    updateRequest += "', '";
-    updateRequest += valAudNumber;
-    updateRequest += "')";
-    updateRequest += " WHERE (id = ";
-    updateRequest += QString::number(currentId);
-    updateRequest += ")";
-    qmodel->setQuery(updateRequest);
-    ui->tableView->setModel(qmodel);
+
+    bool flag = true;
+    QString getIdRequest = "SELECT id FROM audiences_info WHERE (full_num = '" + valAud + "')";
+    query->exec(getIdRequest);
+    while (query->next()) {
+                flag = false;
+            }
+    if (flag) {
+        QString updateRequest = "UPDATE audiences_info SET (full_num, capacity, type, equipment, status, building, number) = ('";
+        updateRequest += valAud;
+        updateRequest += "', '";
+        updateRequest += valCap;
+        updateRequest += "', ' ";
+        updateRequest += valType;
+        updateRequest += "', '";
+        updateRequest += valEquip;
+        updateRequest += "', '";
+        updateRequest += valStatus;
+        updateRequest += "', '";
+        updateRequest += valAudBuilding;
+        updateRequest += "', '";
+        updateRequest += valAudNumber;
+        updateRequest += "')";
+        updateRequest += " WHERE (id = ";
+        updateRequest += QString::number(currentId);
+        updateRequest += ")";
+        qmodel->setQuery(updateRequest);
+        ui->tableView->setModel(qmodel);
+    }
+    else (QMessageBox::information(this, "Ошибка при изменение данных", "Аудитория с номером " + valAud + " уже существует."));
     applyFilters();
 }
 void MainWindow::keyPressEvent(QKeyEvent *e) {

@@ -6,8 +6,6 @@
 #include <qsqlquery.h>
 #include <qsqltablemodel.h>
 #include <QTableView>
-#include <QDebug>
-#include <string>
 #include <QSqlQueryModel>
 #include <QSqlTableModel>
 #include <QSqlQueryModel>
@@ -24,7 +22,6 @@ class MainWindow : public QMainWindow
 
 public:
     /// @brief Конструктор, в котором происходит подключение и открытие базы данных, подготовка базы данных к работе и вывод базы данных с дефолтными параметрами фильтрации
-    
     MainWindow(QWidget *parent = nullptr);
     /// @brief Диструктор, в котором освобождается занятая память
     ~MainWindow();
@@ -38,18 +35,10 @@ private:
     QSqlQuery *query;
     /// @brief Поле, хранящее указатель на экземпляр и предоставляющее модель данных, доступную только для чтения, для наборов результатов SQL
     QSqlQueryModel *qmodel;
-    /// @brief Отчистка предидущей база дынных
-    void clear_db();
-    /// @brief Создание пустой базы данных
-    void create_db();
-    /// @brief Заполнение базы данных
-    void fill_db();
     /// @brief ID аудитории на которую нажал пользователь 
     int currentId;
-    QString curentAud;
 protected:
     /// @brief Обработка нажатия клавиши "Enter" для вывода базы данных с установленными фильтрами
-  
     void keyPressEvent(QKeyEvent *e) override;
 
 private slots:

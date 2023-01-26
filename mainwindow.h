@@ -6,11 +6,14 @@
 #include <qsqlquery.h>
 #include <qsqltablemodel.h>
 #include <QTableView>
+#include <QDebug>
+#include <string>
 #include <QSqlQueryModel>
 #include <QSqlTableModel>
 #include <QSqlQueryModel>
 #include <QKeyEvent>
 #include <QMessageBox>
+#include <QStandardItemModel>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -37,6 +40,7 @@ private:
     QSqlQueryModel *qmodel;
     /// @brief ID аудитории на которую нажал пользователь 
     int currentId;
+
 protected:
     /// @brief Обработка нажатия клавиши "Enter" для вывода базы данных с установленными фильтрами
     void keyPressEvent(QKeyEvent *e) override;
@@ -60,6 +64,6 @@ private slots:
     void on_pushButtonShowAll_clicked();
     /// @brief Обработка нажатий пользователя по таблице с аудиториями
     void on_tableView_clicked(const QModelIndex &index);
-
+    
 };
 #endif // MAINWINDOW_H

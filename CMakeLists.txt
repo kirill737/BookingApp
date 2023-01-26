@@ -27,11 +27,13 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
     )
+
 else()
     if(ANDROID)
         add_library(booking_app SHARED
             ${PROJECT_SOURCES}
         )
+
     else()
         add_executable(booking_app
             ${PROJECT_SOURCES}
@@ -49,6 +51,7 @@ set_target_properties(booking_app PROPERTIES
     MACOSX_BUNDLE TRUE
     WIN32_EXECUTABLE TRUE
 )
+
 
 if(QT_VERSION_MAJOR EQUAL 6)
     qt_finalize_executable(booking_app)

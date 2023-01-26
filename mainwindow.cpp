@@ -1,7 +1,6 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
 
-
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -148,7 +147,7 @@ void MainWindow::applyFilters(){
     ui->tableView->setModel(qmodel);
     ui->tableView->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Fixed);
     ui->tableView->horizontalHeader()->setSectionResizeMode(2, QHeaderView::Fixed);
-    ui->tableView->horizontalHeader()->setSectionResizeMode(4, QHeaderView::Fixed);
+    ui->tableView->horizontalHeader()->setSectionResizeMode(4, QHeaderView::Stretch);
     ui->tableView->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
     ui->tableView->horizontalHeader()->setSectionResizeMode(3, QHeaderView::Stretch);
 }
@@ -203,7 +202,7 @@ void MainWindow::on_btnAddAudit_clicked(){
     ui->tableView->setModel(qmodel);
     ui->tableView->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Fixed);
     ui->tableView->horizontalHeader()->setSectionResizeMode(2, QHeaderView::Fixed);
-    ui->tableView->horizontalHeader()->setSectionResizeMode(4, QHeaderView::Fixed);
+    ui->tableView->horizontalHeader()->setSectionResizeMode(4, QHeaderView::Stretch);
     ui->tableView->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
     ui->tableView->horizontalHeader()->setSectionResizeMode(3, QHeaderView::Stretch);
     

@@ -182,7 +182,8 @@ void MainWindow::on_btnAddAudit_clicked(){
     valEquip = ui->lineEdit_valEquip->text();
     valStatus = ui->comboBox_valStatus->currentText();
     valAud = valAudBuilding + "-" + valAudNumber;
-
+    bool flag_aud = true;
+    if ((valAudNumber == "") || (valAudBuilding == "")) flag_aud = false;
     bool flag = true;
     QString getIdRequest = "SELECT id FROM audiences_info WHERE (full_num = '" + valAud + "')";
     query->exec(getIdRequest);
@@ -190,12 +191,14 @@ void MainWindow::on_btnAddAudit_clicked(){
                 flag = false;
             }
 //ДОБАВЛЯЕТ АУДИТОРИЮ С ВЫСТАВЛЕННЫМИ ПАРАМЕТРАМИ
-    if (flag) {
+    if (!flag_aud) (QMessageBox::information(this, "Ошибка при добавление аудитории", "Не указано корпус или номер аудитории."));
+    else if (!flag) (QMessageBox::information(this, "Ошибка при добавление аудитории", "Аудитория с номером " + valAud + " уже существует. Если хотите обновить информацию о ней, нажмите кнопку 'Сохранить данные.'"));
+    else if (flag && flag_aud) {
         QString execQuery = "INSERT INTO audiences_info (full_num, capacity, type, equipment, status, building, number) VALUES";
         execQuery += "('" + valAud + "', '" + valCap + "', '" + valType + "', '" + valEquip + "', '" + valStatus + "', '" + valAudBuilding + "', '" + valAudNumber + "')";
         query->exec(execQuery);
     }
-    else (QMessageBox::information(this, "Ошибка при добавление аудитории", "Аудитория с номером " + valAud + " уже существует. Если хотите обновить информацию о ней, нажмите кнопку 'Сохранить данные.'"));
+    
 //ВЫВОД ОТФИЛЬТРОВАННЫХ ДАННЫХ
     clearFilters();
     qmodel->setQuery("SELECT full_num AS 'Аудитория', type AS 'Тип', capacity AS 'Вместимость', equipment AS 'Оборудование', status AS 'Cостояние' FROM audiences_info ");

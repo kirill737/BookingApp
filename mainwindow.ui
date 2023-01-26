@@ -37,7 +37,7 @@
      <rect>
       <x>210</x>
       <y>10</y>
-      <width>651</width>
+      <width>661</width>
       <height>511</height>
      </rect>
     </property>
@@ -300,9 +300,9 @@
    <widget class="QLabel" name="label_8">
     <property name="geometry">
      <rect>
-      <x>460</x>
+      <x>450</x>
       <y>520</y>
-      <width>111</width>
+      <width>141</width>
       <height>20</height>
      </rect>
     </property>
@@ -556,7 +556,7 @@
     <widget class="QCheckBox" name="checkBox_build_L">
      <property name="geometry">
       <rect>
-       <x>50</x>
+       <x>60</x>
        <y>50</y>
        <width>33</width>
        <height>21</height>
@@ -633,8 +633,8 @@
     <widget class="QCheckBox" name="checkBox_build_B">
      <property name="geometry">
       <rect>
-       <x>50</x>
-       <y>23</y>
+       <x>60</x>
+       <y>20</y>
        <width>33</width>
        <height>21</height>
       </rect>
@@ -652,8 +652,8 @@
     <widget class="QCheckBox" name="checkBox_build_G">
      <property name="geometry">
       <rect>
-       <x>90</x>
-       <y>23</y>
+       <x>110</x>
+       <y>20</y>
        <width>31</width>
        <height>21</height>
       </rect>

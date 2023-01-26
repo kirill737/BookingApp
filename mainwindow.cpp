@@ -1,5 +1,45 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
+
+void MainWindow::clear_db() {
+    query->exec("DROP TABLE IF EXISTS audiences_info");
+}
+void MainWindow::create_db() {
+    query->exec("CREATE TABLE audiences_info ("
+        "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+        "full_num TEXT," 
+        "building TEXT,"
+        "number INTEGER,"
+        "type TEXT DEFAULT 'практическая',"
+        "capacity INTEGER,"
+        "equipment TEXT,"
+        "status TEXT DEFAULT 'доступна')");
+}
+void MainWindow::fill_db() {
+    query->exec("INSERT INTO audiences_info (full_num, building, number, capacity, type, equipment)"
+        "VALUES ('А-304','А', 304, 40, 'практическая', 'проектор, доска'),"
+        "('А-507','А', 507, 100, 'практическая', 'проектор, доска'),"
+        "('А-511', 'А', 511, 60, 'практическая', 'проектор, доска'),"
+        "('А-512', 'А', 512, 40, 'практическая', 'проектор, доска'),"
+        "('Б-4','Б', 4, 40, 'лекционная', 'проектор, доска'),"
+        "('Б-902', 'Б', 902, 30, 'практическая, лаборантская', 'компьютер, проектор, доска'),"
+        "('Б-905', 'Б', 905 , 35, 'практическая, лаборантская', 'компьютер, проектор, доска'),"
+        "('Б-934', 'Б', 934, 150, 'лекционная', 'проектор, доска'),"
+        "('К-313', 'К', 313, 100, 'лекционная, практическая', 'проектор, доска'),"
+        "('Л-524', 'Л', 524, 35, 'практическая', 'проектор, доска'),"
+        "('Л-533', 'Л', 533, 35, 'практическая', 'проектор, доска'),"
+        "('Л-556', 'Л', 556, 150, 'лекционная', 'проектор, доска'),"
+        "('Л-634', 'Л', 634, 40, 'практическая', 'проектор, доска'),"
+        "('Л-645', 'Л', 645, 40, 'практическая', 'проектор, доска'),"
+        "('Л-746', 'Л', 746, 150, 'лекционная', 'проектор, доска'),"
+        "('Г-514', 'Г', 514, 35, 'практическая', 'проектор, доска'),"
+        "('Л-550', 'Л', 550, 150, 'лекционная', 'проектор, доска')");
+
+    query->exec("INSERT INTO audiences_info (full_num, building, number, capacity, type, equipment, status)"
+        "VALUES ('Л-640','Л', 640, 40, 'практическая', 'доска', 'в ремонте'),"
+        "('Л-560','Л', 560, 30, 'практическая', 'проектор, доска', 'в ремонте')");
+}
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -14,7 +54,7 @@ MainWindow::MainWindow(QWidget *parent)
     clearFilters();
     currentId = -1;
     applyFilters();
-}
+}   
 
 MainWindow::~MainWindow()
 {
@@ -145,10 +185,10 @@ void MainWindow::applyFilters(){
     qmodel->setQuery(finalRequest);
     ui->tableView->setModel(qmodel);
     ui->tableView->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Fixed);
-    ui->tableView->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
     ui->tableView->horizontalHeader()->setSectionResizeMode(2, QHeaderView::Fixed);
-    ui->tableView->horizontalHeader()->setSectionResizeMode(3, QHeaderView::Stretch);
     ui->tableView->horizontalHeader()->setSectionResizeMode(4, QHeaderView::Fixed);
+    ui->tableView->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
+    ui->tableView->horizontalHeader()->setSectionResizeMode(3, QHeaderView::Stretch);
 }
 void MainWindow::clearFilters(){
     // обнуляет фильтры
@@ -280,36 +320,26 @@ void MainWindow::on_pushButtonSaveInfo_clicked() {
     valCap = ui->lineEdit_valCap->text();
     valEquip = ui->lineEdit_valEquip->text();
     valStatus = ui->comboBox_valStatus->currentText();
-
-    bool flag = true;
-    QString getIdRequest = "SELECT id FROM audiences_info WHERE (full_num = '" + valAud + "')";
-    query->exec(getIdRequest);
-    while (query->next()) {
-                flag = false;
-            }
-    if (flag) {
-        QString updateRequest = "UPDATE audiences_info SET (full_num, capacity, type, equipment, status, building, number) = ('";
-        updateRequest += valAud;
-        updateRequest += "', '";
-        updateRequest += valCap;
-        updateRequest += "', ' ";
-        updateRequest += valType;
-        updateRequest += "', '";
-        updateRequest += valEquip;
-        updateRequest += "', '";
-        updateRequest += valStatus;
-        updateRequest += "', '";
-        updateRequest += valAudBuilding;
-        updateRequest += "', '";
-        updateRequest += valAudNumber;
-        updateRequest += "')";
-        updateRequest += " WHERE (id = ";
-        updateRequest += QString::number(currentId);
-        updateRequest += ")";
-        qmodel->setQuery(updateRequest);
-        ui->tableView->setModel(qmodel);
-    }
-    else (QMessageBox::information(this, "Ошибка при изменение данных", "Аудитория с номером " + valAud + " уже существует."));
+    QString updateRequest = "UPDATE audiences_info SET (full_num, capacity, type, equipment, status, building, number) = ('";
+    updateRequest += valAud;
+    updateRequest += "', '";
+    updateRequest += valCap;
+    updateRequest += "', ' ";
+    updateRequest += valType;
+    updateRequest += "', '";
+    updateRequest += valEquip;
+    updateRequest += "', '";
+    updateRequest += valStatus;
+    updateRequest += "', '";
+    updateRequest += valAudBuilding;
+    updateRequest += "', '";
+    updateRequest += valAudNumber;
+    updateRequest += "')";
+    updateRequest += " WHERE (id = ";
+    updateRequest += QString::number(currentId);
+    updateRequest += ")";
+    qmodel->setQuery(updateRequest);
+    ui->tableView->setModel(qmodel);
     applyFilters();
 }
 void MainWindow::keyPressEvent(QKeyEvent *e) {

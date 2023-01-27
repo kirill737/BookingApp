@@ -166,6 +166,14 @@ void MainWindow::clearFilters(){
     ui->checkBox_build_G->setChecked(false);
     ui->checkBox_build_K->setChecked(false);
     ui->checkBox_revSort->setChecked(false);
+
+    ui->btnRemoveAudit->setEnabled(false);
+    ui->pushButtonSaveInfo->setEnabled(false);
+    ui->lineEdit_valAudBuild->setText("");
+    ui->lineEdit_valAudNumber->setText("");
+    ui->lineEdit_valCap->setText("");
+    ui->lineEdit_valEquip->setText("");
+    ui->lineEdit_valType->setText("");
 }
 void MainWindow::on_btnSetFilters_clicked(){
     applyFilters();
@@ -173,6 +181,7 @@ void MainWindow::on_btnSetFilters_clicked(){
 void MainWindow::on_btnAddAudit_clicked(){
     QString valAud = "", valAudBuilding = "", valAudNumber = "", valType = "", valCap = "", valEquip = "", valStatus = "";
     int statusIndex = 0;
+    
 
 //ПОЛУЧЕНИЕ ИСХОДНЫХ ДАННЫХ ИЗ ТАБЛИЦЫ
     valAudNumber = ui->lineEdit_valAudNumber->text();
@@ -182,32 +191,35 @@ void MainWindow::on_btnAddAudit_clicked(){
     valEquip = ui->lineEdit_valEquip->text();
     valStatus = ui->comboBox_valStatus->currentText();
     valAud = valAudBuilding + "-" + valAudNumber;
-    bool flag_aud = true;
-    if ((valAudNumber == "") || (valAudBuilding == "")) flag_aud = false;
-    bool flag = true;
+    bool flag_aud = true, flag = true, noError = true;;
+    if ((valAudNumber == "") || (valAudBuilding == "")) {flag_aud = false, noError = false;}
     QString getIdRequest = "SELECT id FROM audiences_info WHERE (full_num = '" + valAud + "')";
     query->exec(getIdRequest);
     while (query->next()) {
                 flag = false;
+                noError = false;
             }
 //ДОБАВЛЯЕТ АУДИТОРИЮ С ВЫСТАВЛЕННЫМИ ПАРАМЕТРАМИ
     if (!flag_aud) (QMessageBox::information(this, "Ошибка при добавление аудитории", "Не указано корпус или номер аудитории."));
     else if (!flag) (QMessageBox::information(this, "Ошибка при добавление аудитории", "Аудитория с номером " + valAud + " уже существует. Если хотите обновить информацию о ней, нажмите кнопку 'Сохранить данные.'"));
-    else if (flag && flag_aud) {
+    else if (noError) {
         QString execQuery = "INSERT INTO audiences_info (full_num, capacity, type, equipment, status, building, number) VALUES";
         execQuery += "('" + valAud + "', '" + valCap + "', '" + valType + "', '" + valEquip + "', '" + valStatus + "', '" + valAudBuilding + "', '" + valAudNumber + "')";
         query->exec(execQuery);
     }
     
 //ВЫВОД ОТФИЛЬТРОВАННЫХ ДАННЫХ
-    clearFilters();
-    qmodel->setQuery("SELECT full_num AS 'Аудитория', type AS 'Тип', capacity AS 'Вместимость', equipment AS 'Оборудование', status AS 'Cостояние' FROM audiences_info ");
-    ui->tableView->setModel(qmodel);
-    ui->tableView->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Fixed);
-    ui->tableView->horizontalHeader()->setSectionResizeMode(2, QHeaderView::Fixed);
-    ui->tableView->horizontalHeader()->setSectionResizeMode(4, QHeaderView::Stretch);
-    ui->tableView->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
-    ui->tableView->horizontalHeader()->setSectionResizeMode(3, QHeaderView::Stretch);
+    if (noError) {
+        clearFilters();
+        ui->pushButtonSaveInfo->setEnabled(false);
+        qmodel->setQuery("SELECT full_num AS 'Аудитория', type AS 'Тип', capacity AS 'Вместимость', equipment AS 'Оборудование', status AS 'Cостояние' FROM audiences_info ");
+        ui->tableView->setModel(qmodel);
+        ui->tableView->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Fixed);
+        ui->tableView->horizontalHeader()->setSectionResizeMode(2, QHeaderView::Fixed);
+        ui->tableView->horizontalHeader()->setSectionResizeMode(4, QHeaderView::Stretch);
+        ui->tableView->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
+        ui->tableView->horizontalHeader()->setSectionResizeMode(3, QHeaderView::Stretch);
+    }
     
 }
 void MainWindow::on_pushButtonShowAll_clicked() {
@@ -241,10 +253,20 @@ void MainWindow::on_btnRemoveAudit_clicked(){
     qmodel->setQuery(updateRequest);
     currentId = -1;
     applyFilters();
+
+    ui->btnRemoveAudit->setEnabled(false);
+    ui->pushButtonSaveInfo->setEnabled(false);
+    ui->lineEdit_valAudBuild->setText("");
+    ui->lineEdit_valAudNumber->setText("");
+    ui->lineEdit_valCap->setText("");
+    ui->lineEdit_valEquip->setText("");
+    ui->lineEdit_valType->setText("");
 }
 void MainWindow::on_tableView_clicked(const QModelIndex &index) {
     QString valAud = "", valAudBuilding = "", valAudNumber = "", valType = "", valCap = "", valEquip = "", valStatus = "";
     int statusIndex = 0;
+    ui->pushButtonSaveInfo->setEnabled(true);
+    ui->btnRemoveAudit->setEnabled(true);
 //ПОЛУЧЕНИЕ ИСХОДНЫХ ДАННЫХ ИЗ ТАБЛИЦЫ
     valAud = ui->tableView->model()->data(index.sibling(index.row(), 0)).toString();
     valType = ui->tableView->model()->data(index.sibling(index.row(), 1)).toString();
@@ -305,6 +327,12 @@ void MainWindow::on_pushButtonSaveInfo_clicked() {
     qmodel->setQuery(updateRequest);
     ui->tableView->setModel(qmodel);
     applyFilters();
+    ui->pushButtonSaveInfo->setEnabled(false);
+    ui->lineEdit_valAudBuild->setText("");
+    ui->lineEdit_valAudNumber->setText("");
+    ui->lineEdit_valCap->setText("");
+    ui->lineEdit_valEquip->setText("");
+    ui->lineEdit_valType->setText("");
 }
 void MainWindow::keyPressEvent(QKeyEvent *e) {
     if(e->key() == Qt::Key_Return) {

@@ -299,6 +299,7 @@ void MainWindow::on_tableView_clicked(const QModelIndex &index) {
 void MainWindow::on_pushButtonSaveInfo_clicked() {
     QString valAud = "", valAudBuilding = "", valAudNumber = "", valType = "", valCap = "", valEquip = "", valStatus = "";
     int statusIndex = 0;
+    bool flag_num = true, flag_build = true, noError = true, flag = true;
     valAudBuilding = ui->lineEdit_valAudBuild->text();
     valAudNumber = ui->lineEdit_valAudNumber->text();
     valAud = valAudBuilding + "-" + valAudNumber;
@@ -306,33 +307,48 @@ void MainWindow::on_pushButtonSaveInfo_clicked() {
     valCap = ui->lineEdit_valCap->text();
     valEquip = ui->lineEdit_valEquip->text();
     valStatus = ui->comboBox_valStatus->currentText();
-    QString updateRequest = "UPDATE audiences_info SET (full_num, capacity, type, equipment, status, building, number) = ('";
-    updateRequest += valAud;
-    updateRequest += "', '";
-    updateRequest += valCap;
-    updateRequest += "', ' ";
-    updateRequest += valType;
-    updateRequest += "', '";
-    updateRequest += valEquip;
-    updateRequest += "', '";
-    updateRequest += valStatus;
-    updateRequest += "', '";
-    updateRequest += valAudBuilding;
-    updateRequest += "', '";
-    updateRequest += valAudNumber;
-    updateRequest += "')";
-    updateRequest += " WHERE (id = ";
-    updateRequest += QString::number(currentId);
-    updateRequest += ")";
-    qmodel->setQuery(updateRequest);
-    ui->tableView->setModel(qmodel);
-    applyFilters();
-    ui->pushButtonSaveInfo->setEnabled(false);
-    ui->lineEdit_valAudBuild->setText("");
-    ui->lineEdit_valAudNumber->setText("");
-    ui->lineEdit_valCap->setText("");
-    ui->lineEdit_valEquip->setText("");
-    ui->lineEdit_valType->setText("");
+    if (valAudNumber == "") {flag_num = false, noError = false;}
+    if (valAudBuilding == "") {flag_build = false, noError = false;}
+    QString getIdRequest = "SELECT id FROM audiences_info WHERE (full_num = '" + valAud + "')";
+    query->exec(getIdRequest);
+    while (query->next()) {
+                flag = false;
+                noError = false;
+            }
+    if (!flag_num) (QMessageBox::information(this, "Ошибка при изменение данных", "Не указан номер аудитории."));
+    if (!flag_build) (QMessageBox::information(this, "Ошибка при изменение данных", "Не указан корпус аудитории."));
+    
+    if (!flag) (QMessageBox::information(this, "Ошибка при изменение данных", "Аудитория с номером " + valAud + " уже существует."));
+    
+    if (noError) {
+        QString updateRequest = "UPDATE audiences_info SET (full_num, capacity, type, equipment, status, building, number) = ('";
+        updateRequest += valAud;
+        updateRequest += "', '";
+        updateRequest += valCap;
+        updateRequest += "', ' ";
+        updateRequest += valType;
+        updateRequest += "', '";
+        updateRequest += valEquip;
+        updateRequest += "', '";
+        updateRequest += valStatus;
+        updateRequest += "', '";
+        updateRequest += valAudBuilding;
+        updateRequest += "', '";
+        updateRequest += valAudNumber;
+        updateRequest += "')";
+        updateRequest += " WHERE (id = ";
+        updateRequest += QString::number(currentId);
+        updateRequest += ")";
+        qmodel->setQuery(updateRequest);
+        ui->tableView->setModel(qmodel);
+        applyFilters();
+        ui->pushButtonSaveInfo->setEnabled(false);
+        ui->lineEdit_valAudBuild->setText("");
+        ui->lineEdit_valAudNumber->setText("");
+        ui->lineEdit_valCap->setText("");
+        ui->lineEdit_valEquip->setText("");
+        ui->lineEdit_valType->setText("");
+    }
 }
 void MainWindow::keyPressEvent(QKeyEvent *e) {
     if(e->key() == Qt::Key_Return) {

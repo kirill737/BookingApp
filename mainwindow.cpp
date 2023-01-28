@@ -315,8 +315,11 @@ void MainWindow::on_pushButtonSaveInfo_clicked() {
                 flag = false;
                 noError = false;
             }
-    if (!flag_num) (QMessageBox::information(this, "Ошибка при изменение данных", "Не указан номер аудитории."));
-    if (!flag_build) (QMessageBox::information(this, "Ошибка при изменение данных", "Не указан корпус аудитории."));
+    if (!flag_build && !flag_num) (QMessageBox::information(this, "Ошибка при изменение данных", "Не указан номер и корпус аудитории."));
+    else {
+        if (!flag_num) (QMessageBox::information(this, "Ошибка при изменение данных", "Не указан номер аудитории."));
+        if (!flag_build) (QMessageBox::information(this, "Ошибка при изменение данных", "Не указан корпус аудитории."));
+    }
     
     if (!flag) (QMessageBox::information(this, "Ошибка при изменение данных", "Аудитория с номером " + valAud + " уже существует."));
     
